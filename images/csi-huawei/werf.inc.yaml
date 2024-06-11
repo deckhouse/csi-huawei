@@ -7,14 +7,6 @@
 image: {{ $.ImageName }}-golang-artifact
 from: {{ $.BASE_GOLANG_22_ALPINE }}
 fromCacheVersion: "2024-05-14.1"
-git:
-  - add: /images/{{ $.ImageName }}
-    to: /
-    stageDependencies:
-      setup:
-        - "**/*"
-    includePaths:
-      - patches
 
 mount:
   - fromPath: ~/go-pkg-cache
@@ -44,7 +36,6 @@ from: {{ $.BASE_ALT_DEV }}
 
 shell:
   install:
-    - apt update && apt install nfs-common
     - /binary_replace.sh -i "{{ $csiBinaries }}" -o /relocate
 
 ---
