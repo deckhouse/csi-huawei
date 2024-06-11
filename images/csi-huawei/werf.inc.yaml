@@ -35,7 +35,7 @@ shell:
     - chmod +x /storage-backend-controller
     - chmod +x /storage-backend-sidecar
     - chmod +x /oceanctl
-    -
+
 ---
 {{ $csiBinaries := "/bin/mount /bin/umount" }}
 ---
