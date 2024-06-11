@@ -35,6 +35,17 @@ shell:
     - chmod +x /storage-backend-controller
     - chmod +x /storage-backend-sidecar
     - chmod +x /oceanctl
+    -
+---
+{{ $csiBinaries := "/bin/mount /bin/umount" }}
+---
+image: {{ $.ImageName }}-binaries-artifact
+from: {{ $.BASE_ALT_DEV }}
+
+shell:
+  install:
+    - apt update && apt install nfs-common
+    - /binary_replace.sh -i "{{ $csiBinaries }}" -o /relocate
 
 ---
 image: {{ $.ImageName }}-distroless-artifact
