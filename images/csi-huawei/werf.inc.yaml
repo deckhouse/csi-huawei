@@ -23,7 +23,7 @@ shell:
     - GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="-s -w" -o /storage-backend-controller ./cmd/storage-backend-controller
     - GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="-s -w" -o /storage-backend-sidecar ./cmd/storage-backend-sidecar
     - GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="-s -w" -o /oceanctl ./cli
-    - chmod +x /csi
+    - chmod +x /huaweicsi
     - chmod +x /storage-backend-controller
     - chmod +x /storage-backend-sidecar
     - chmod +x /oceanctl
