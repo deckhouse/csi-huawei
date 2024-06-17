@@ -6,7 +6,14 @@
 {{- define "csi_controller_args" }}
 - "--nodename=$(NODE_ID)"
 - "--endpoint=$(CSI_ENDPOINT)"
+- "--dr-endpoint=$(DRCSI_ENDPOINT)"
 - "--driver-name=csi.huawei.com"
+- "--controller"
+- "--backend-update-interval=60"
+- "--logging-module=file"
+- "--log-level=log"
+- "--volume-name-prefix=pvc"
+- "--enable-label=false"
 {{- end }}
 
 {{- define "csi_controller_envs" }}
@@ -16,6 +23,8 @@
       fieldPath: spec.nodeName
 - name: CSI_ENDPOINT
   value: unix:///csi/csi.sock
+- name: DRCSI_ENDPOINT
+  value: unix:///csi/dr-csi.sock
 - name: CSI_NAMESPACE
   valueFrom:
     fieldRef:
