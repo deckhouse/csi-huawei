@@ -99,3 +99,6 @@ import:
     includePaths:
       - 'libresolv*'
       - 'libnss_dns*'
+
+docker:
+  ENTRYPOINT: ["/huaweicsi"]
