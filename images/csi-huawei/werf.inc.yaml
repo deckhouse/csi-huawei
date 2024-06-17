@@ -71,8 +71,8 @@ fromImage: {{ $.ImageName }}-distroless
 
 import:
   - image: {{ $.ImageName }}-golang-artifact
-    add: /csi
-    to: /csi
+    add: /huaweicsi
+    to: /huaweicsi
     before: setup
   - image: {{ $.ImageName }}-golang-artifact
     add: /storage-backend-controller
