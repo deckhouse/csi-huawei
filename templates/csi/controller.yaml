@@ -11,7 +11,7 @@
 - "--controller"
 - "--backend-update-interval=60"
 - "--logging-module=file"
-- "--log-level=log"
+- "--log-level=info"
 - "--volume-name-prefix=pvc"
 - "--enable-label=false"
 {{- end }}
