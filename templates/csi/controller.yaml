@@ -16,6 +16,11 @@
       fieldPath: spec.nodeName
 - name: CSI_ENDPOINT
   value: unix:///csi/csi.sock
+- name: CSI_NAMESPACE
+  valueFrom:
+    fieldRef:
+      apiVersion: v1
+      fieldPath: metadata.namespace
 {{- include "helm_lib_envs_for_proxy" . }}
 {{- end }}
 
