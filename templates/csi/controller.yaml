@@ -48,11 +48,6 @@
   mountPropagation: "Bidirectional"
 - mountPath: /tmp
   name: tmp-dir
-- name: CSI_NAMESPACE
-  valueFrom:
-    fieldRef:
-      apiVersion: v1
-      fieldPath: metadata.namespace
 {{- end }}
 
 {{- $csiControllerImage := include "helm_lib_module_image" (list . "csiHuawei") }}
@@ -88,6 +83,11 @@
 {{- define "csi_node_envs" }}
 - name: CSI_ENDPOINT
   value: /csi/csi.sock
+- name: CSI_NAMESPACE
+  valueFrom:
+    fieldRef:
+      apiVersion: v1
+      fieldPath: metadata.namespace
 {{- end }}
 
 {{- $csiNodeConfig := dict }}
