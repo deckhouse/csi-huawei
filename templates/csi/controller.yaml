@@ -48,6 +48,11 @@
   mountPropagation: "Bidirectional"
 - mountPath: /tmp
   name: tmp-dir
+- name: CSI_NAMESPACE
+  valueFrom:
+    fieldRef:
+      apiVersion: v1
+      fieldPath: metadata.namespace
 {{- end }}
 
 {{- $csiControllerImage := include "helm_lib_module_image" (list . "csiHuawei") }}
