@@ -4,13 +4,9 @@
 
 
 {{- define "csi_controller_args" }}
-- "--v=5"
-- "--nodeid=$(NODE_ID)"
+- "--nodename=$(NODE_ID)"
 - "--endpoint=$(CSI_ENDPOINT)"
-- "--drivername=csi.huawei.com"
-- "--mount-permissions=0"
-- "--working-mount-dir=/tmp"
-- "--default-ondelete-policy=delete"
+- "--driver-name=csi.huawei.com"
 {{- end }}
 
 {{- define "csi_controller_envs" }}
