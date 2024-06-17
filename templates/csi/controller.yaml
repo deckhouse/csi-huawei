@@ -22,9 +22,9 @@
     fieldRef:
       fieldPath: spec.nodeName
 - name: CSI_ENDPOINT
-  value: unix:///csi/csi.sock
+  value: /csi/csi.sock
 - name: DRCSI_ENDPOINT
-  value: unix:///csi/dr-csi.sock
+  value: /csi/dr-csi.sock
 - name: CSI_NAMESPACE
   valueFrom:
     fieldRef:
@@ -59,7 +59,7 @@
 {{- $_ := set $csiControllerConfig "provisionerTimeout" "1200s" }}
 {{- $_ := set $csiControllerConfig "snapshotterTimeout" "1200s" }}
 {{- $_ := set $csiControllerConfig "extraCreateMetadataEnabled" true }}
-{{- $_ := set $csiControllerConfig "livenessProbePort" 29652 }}
+{{- $_ := set $csiControllerConfig "livenessProbePort" 9696 }}
 {{- $_ := set $csiControllerConfig "additionalControllerArgs" (include "csi_controller_args" . | fromYamlArray) }}
 {{- $_ := set $csiControllerConfig "additionalControllerEnvs" (include "csi_controller_envs" . | fromYamlArray) }}
 {{- $_ := set $csiControllerConfig "additionalControllerVolumes" (include "csi_additional_controller_volume" . | fromYamlArray) }}
@@ -82,7 +82,7 @@
 
 {{- define "csi_node_envs" }}
 - name: CSI_ENDPOINT
-  value: unix:///csi/csi.sock
+  value: /csi/csi.sock
 {{- end }}
 
 {{- $csiNodeConfig := dict }}
