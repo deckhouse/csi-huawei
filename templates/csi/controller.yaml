@@ -73,6 +73,7 @@
 
 {{- define "csi_node_args" }}
 - "--endpoint=$(CSI_ENDPOINT)"
+- "--dr-endpoint=$(DRCSI_ENDPOINT)"
 - "--driver-name=csi.huawei.com"
 - "--connector-threads=4"
 - "--volume-use-multipath=true"
@@ -83,6 +84,8 @@
 {{- define "csi_node_envs" }}
 - name: CSI_ENDPOINT
   value: /csi/csi.sock
+- name: DRCSI_ENDPOINT
+  value: /csi/dr-csi.sock
 - name: CSI_NAMESPACE
   valueFrom:
     fieldRef:
