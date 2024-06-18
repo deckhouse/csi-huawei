@@ -27,9 +27,7 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  labels:
-    provisioner: csi.huawei.com
-  name: csi-node
+  name: d8:{{ .Chart.Name }}:csi:node
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
