@@ -1,10 +1,14 @@
 {{- include "helm_lib_csi_controller_rbac" . }}
 ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: csi-node
+  namespace: d8-{{ .Chart.Name }}
+---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  labels:
-    provisioner: csi.huawei.com
   name: csi-node
 rules:
   - apiGroups: [ "" ]
@@ -33,4 +37,4 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: csi-node
-    namespace: {{ .Values.kubernetes.namespace }}
+    namespace: d8-{{ .Chart.Name }}
