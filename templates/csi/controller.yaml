@@ -102,6 +102,7 @@
 {{- $_ := set $csiNodeConfig "fullname" "csi-huawei" }}
 {{- $_ := set $csiNodeConfig "nodeImage" $csiControllerImage }}
 {{- $_ := set $csiNodeConfig "driverFQDN" "csi.huawei.com" }}
+{{- $_ := set $csiNodeConfig "serviceAccount" "csi-node" }}
 {{- $_ := set $csiNodeConfig "additionalNodeArgs" (include "csi_node_args" . | fromYamlArray) }}
 {{- $_ := set $csiNodeConfig "additionalNodeEnvs" (include "csi_node_envs" . | fromYamlArray) }}
 
