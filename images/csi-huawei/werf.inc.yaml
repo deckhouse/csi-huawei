@@ -34,7 +34,7 @@ shell:
     - chmod +x /oceanctl
 
 ---
-{{ $csiBinaries := "/bin/mount /bin/umount /util-linux/nsenter.static" }}
+{{ $csiBinaries := "/bin/mount /bin/umount /usr/bin/nsenter" }}
 ---
 image: {{ $.ImageName }}-binaries-artifact
 from: {{ $.BASE_ALT_DEV }}
@@ -112,7 +112,7 @@ import:
       - 'libresolv*'
       - 'libnss_dns*'
   - image: {{ $.ImageName }}-binaries-artifact
-    add: /nsenter.static
+    add: /nsenter
     to: /bin/nsenter
     before: install
 
