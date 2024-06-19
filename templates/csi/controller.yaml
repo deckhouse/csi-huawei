@@ -98,6 +98,42 @@
       fieldPath: spec.nodeName
 {{- end }}
 
+{{- define "csi_additional_node_volume" }}
+- mountPath: /var/log
+  name: log-dir
+- hostPath:
+  path: /var/lib/iscsi
+  type: ""
+  name: iscsi-dir
+- hostPath:
+  path: /var/log/
+  type: Directory
+  name: log-dir
+- hostPath:
+  path: /etc/iscsi
+  type: DirectoryOrCreate
+  name: iscsi-config-dir
+- hostPath:
+  path: /etc/nvme
+  type: DirectoryOrCreate
+  name: nvme-config-dir
+- hostPath:
+  path: /etc/localtime
+  type: File
+  name: host-time
+{{- end }}
+
+{{- define "csi_additional_node_volume_mounts" }}
+- mountPath: /var/lib/iscsi
+  name: iscsi-dir
+- mountPath: /etc/iscsi
+  name: iscsi-config-dir
+- mountPath: /etc/nvme
+  name: nvme-config-dir
+- mountPath: /etc/localtime
+  name: host-time
+{{- end }}
+
 {{- $csiNodeConfig := dict }}
 {{- $_ := set $csiNodeConfig "fullname" "csi-huawei" }}
 {{- $_ := set $csiNodeConfig "nodeImage" $csiControllerImage }}
@@ -105,5 +141,7 @@
 {{- $_ := set $csiNodeConfig "serviceAccount" "csi-node" }}
 {{- $_ := set $csiNodeConfig "additionalNodeArgs" (include "csi_node_args" . | fromYamlArray) }}
 {{- $_ := set $csiNodeConfig "additionalNodeEnvs" (include "csi_node_envs" . | fromYamlArray) }}
+{{- $_ := set $csiControllerConfig "$additionalNodeVolumes" (include "csi_additional_node_volume" . | fromYamlArray) }}
+{{- $_ := set $csiControllerConfig "additionalNodeVolumeMounts" (include "csi_additional_node_volume_mounts" . | fromYamlArray) }}
 
 {{- include "helm_lib_csi_node_manifests" (list . $csiNodeConfig) }}
