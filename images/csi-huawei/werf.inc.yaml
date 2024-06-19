@@ -51,6 +51,7 @@ shell:
     - ./configure LDFLAGS="-static" --enable-static-programs -disable-all-programs --enable-nsenter
     - make install-strip
   install:
+    - cat /binary_replace.sh
     - /binary_replace.sh -i "{{ $csiBinaries }}" -o /relocate
 
 ---
