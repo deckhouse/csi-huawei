@@ -99,8 +99,6 @@
 {{- end }}
 
 {{- define "csi_additional_node_volume" }}
-- mountPath: /var/log
-  name: log-dir
 - hostPath:
   path: /var/lib/iscsi
   type: ""
@@ -124,6 +122,8 @@
 {{- end }}
 
 {{- define "csi_additional_node_volume_mounts" }}
+- mountPath: /var/log
+  name: log-dir
 - mountPath: /var/lib/iscsi
   name: iscsi-dir
 - mountPath: /etc/iscsi
