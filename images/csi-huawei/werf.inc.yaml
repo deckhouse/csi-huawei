@@ -52,6 +52,7 @@ shell:
     - make install-strip
   install:
     - cat /binary_replace.sh
+    - ls -lah /usr/bin/xargs
     - /binary_replace.sh -i "{{ $csiBinaries }}" -o /relocate
 
 ---
