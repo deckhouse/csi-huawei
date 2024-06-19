@@ -12,6 +12,8 @@ fromCacheVersion: "2024-06-19.1"
 git:
   - add: /images/csi-huawei/main.go
     to: /main.go
+  - add: /images/csi-huawei/host_helper.go
+    to: /main.go
 mount:
   - fromPath: ~/go-pkg-cache
     to: /go/pkg
