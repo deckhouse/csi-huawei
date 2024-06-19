@@ -44,7 +44,7 @@ shell:
     - cd /
     - git clone {{ env "SOURCE_REPO" }}/util-linux/util-linux.git /util-linux
     - cd /util-linux
-    - git checkout v${UTIL_LINUX_VERSION} && \
+    - git checkout v${UTIL_LINUX_VERSION}
     - ./autogen.sh
     - ./configure LDFLAGS="-static" --enable-static-programs -disable-all-programs --enable-nsenter
     - make install-strip
