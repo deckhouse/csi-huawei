@@ -131,7 +131,7 @@ func runCSINode(ctx context.Context) {
 	// Save host info to secret, such as: hostname, initiator
 	go func() {
 		if err := host.SaveNodeHostInfoToSecret(context.Background()); err != nil {
-			log.Infof("Error while saving secret %s", err)
+			logrus.Infof("Error while saving secret %s", err)
 			notify.Stop("SaveNodeHostInfo fail ,error: [%v]", err)
 		}
 		log.Infof("save node info to secret success")
