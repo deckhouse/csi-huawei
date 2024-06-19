@@ -60,22 +60,26 @@ type NodeHostInfo struct {
 // because the current host may not have an initiator, which should be judged by the caller and handled accordingly
 func NewNodeHostInfo(ctx context.Context) (*NodeHostInfo, error) {
 	hostName, err := utils.GetHostName(ctx)
+	logrus.Infof("8 %s", err)
 	if err != nil {
 		log.AddContext(ctx).Errorf("get host name error: [%v]", err)
 		return nil, err
 	}
 
 	iscsiInitiator, err := proto.GetISCSIInitiator(ctx)
+	logrus.Infof("9 %s", err)
 	if err != nil {
 		log.AddContext(ctx).Infof("get ISCSI initiator error: [%v]", err)
 	}
 
 	fcInitiators, err := proto.GetFCInitiator(ctx)
+	logrus.Infof("10 %s", err)
 	if err != nil {
 		log.AddContext(ctx).Infof("get FC initiator error: [%v]", err)
 	}
 
 	roCEInitiator, err := proto.GetRoCEInitiator(ctx)
+	logrus.Infof("11 %s", err)
 	if err != nil {
 		log.AddContext(ctx).Infof("get RoCE initiator error: [%v]", err)
 	}
