@@ -41,6 +41,7 @@ shell:
 ---
 image: {{ $.ImageName }}-binaries-artifact
 from: {{ $.BASE_ALT_DEV }}
+fromCacheVersion: "2024-06-19.2"
 
 shell:
   setup:
