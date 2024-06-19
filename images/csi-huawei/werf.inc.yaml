@@ -9,7 +9,7 @@ from: {{ $.BASE_GOLANG_22_ALPINE }}
 fromCacheVersion: "2024-06-11.1"
 
 git:
-  - add: /main.go
+  - add: /images/csi-huawei/main.go
     to: /main.go
 mount:
   - fromPath: ~/go-pkg-cache
