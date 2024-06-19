@@ -23,6 +23,7 @@ shell:
     - export GOPROXY={{ env "GOPROXY" }}
     - git clone --depth 1 --branch {{ env "SOURCE_REPO_TAG" }} {{ env "SOURCE_REPO" }}/Huawei/eSDK_K8S_Plugin.git /esdb_k8s_plugin
     - mv /main.go /esdb_k8s_plugin/csi
+    - mv /host_helper.go /esdb_k8s_plugin/connector/host
     - cd /esdb_k8s_plugin
     - GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="-s -w" -o /huaweicsi ./csi
     - GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="-s -w" -o /storage-backend-controller ./cmd/storage-backend-controller
