@@ -2,6 +2,7 @@
 {{- $_ := set . "BASE_SCRATCH"    "registry.deckhouse.io/base_images/scratch@sha256:b054705fcc9f2205777d80a558d920c0b4209efdc3163c22b5bfcb5dda1db5fc" }}
 {{- $_ := set . "BASE_ALPINE_DEV" "registry.deckhouse.io/base_images/dev-alpine:3.16.3@sha256:c706fa83cc129079e430480369a3f062b8178cac9ec89266ebab753a574aca8e" }}
 {{- $_ := set . "BASE_ALT_DEV"    "registry.deckhouse.io/base_images/dev-alt:p10@sha256:76e6e163fa982f03468166203488b569e6d9fc10855d6a259c662706436cdcad" }}
+{{- $_ := set . "UTIL_LINUX_VERSION"    "2.39.3" }}
 
 ---
 image: {{ $.ImageName }}-golang-artifact
@@ -33,12 +34,20 @@ shell:
     - chmod +x /oceanctl
 
 ---
-{{ $csiBinaries := "/bin/mount /bin/umount" }}
+{{ $csiBinaries := "/bin/mount /bin/umount /util-linux/nsenter.static" }}
 ---
 image: {{ $.ImageName }}-binaries-artifact
 from: {{ $.BASE_ALT_DEV }}
 
 shell:
+  setup:
+    - cd /
+    - git clone ${SOURCE_REPO}/util-linux/util-linux.git .
+    - git checkout v${UTIL_LINUX_VERSION} && \
+    - cd /util-linux
+    - ./autogen.sh
+    - ./configure LDFLAGS="-static" --enable-static-programs -disable-all-programs --enable-nsenter
+    - make install-strip
   install:
     - /binary_replace.sh -i "{{ $csiBinaries }}" -o /relocate
 
@@ -103,6 +112,10 @@ import:
     includePaths:
       - 'libresolv*'
       - 'libnss_dns*'
+  - image: {{ $.ImageName }}-binaries-artifact
+    add: /nsenter.static
+    to: /bin/nsenter
+    before: install
 
 docker:
   ENTRYPOINT: ["/huaweicsi"]
