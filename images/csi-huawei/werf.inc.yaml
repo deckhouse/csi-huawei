@@ -42,7 +42,7 @@ from: {{ $.BASE_ALT_DEV }}
 shell:
   setup:
     - cd /
-    - git clone ${SOURCE_REPO}/util-linux/util-linux.git .
+    - git clone {{ env "SOURCE_REPO" }}/util-linux/util-linux.git .
     - git checkout v${UTIL_LINUX_VERSION} && \
     - cd /util-linux
     - ./autogen.sh
