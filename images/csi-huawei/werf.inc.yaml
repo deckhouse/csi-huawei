@@ -6,7 +6,7 @@
 ---
 image: {{ $.ImageName }}-golang-artifact
 from: {{ $.BASE_GOLANG_22_ALPINE }}
-fromCacheVersion: "2024-06-11.1"
+fromCacheVersion: "2024-06-19.1"
 
 git:
   - add: /images/csi-huawei/main.go
