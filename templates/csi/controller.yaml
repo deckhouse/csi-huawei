@@ -66,6 +66,8 @@
     - --leader-lease-duration=8s
     - --leader-renew-deadline=6s
     - --leader-retry-period=2s
+  command:
+    - /storage-backend-controller
   env:
     - name: CSI_NAMESPACE
       valueFrom:
@@ -106,6 +108,8 @@
     - --max-backups=9
     - --backend-update-interval=60
     - --dr-endpoint=$(DRCSI_ENDPOINT)
+  command:
+    - /storage-backend-sidecar
   env:
     - name: DRCSI_ENDPOINT
       value: /csi/dr-csi.sock
