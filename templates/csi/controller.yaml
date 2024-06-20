@@ -100,24 +100,24 @@
 
 {{- define "csi_additional_node_volume" }}
 - hostPath:
-  path: /var/lib/iscsi
-  type: ""
+    path: /var/lib/iscsi
+    type: ""
   name: iscsi-dir
 - hostPath:
-  path: /var/log/
-  type: Directory
+    path: /var/log/
+    type: Directory
   name: log-dir
 - hostPath:
-  path: /etc/iscsi
-  type: DirectoryOrCreate
+    path: /etc/iscsi
+    type: DirectoryOrCreate
   name: iscsi-config-dir
 - hostPath:
-  path: /etc/nvme
-  type: DirectoryOrCreate
+    path: /etc/nvme
+    type: DirectoryOrCreate
   name: nvme-config-dir
 - hostPath:
-  path: /etc/localtime
-  type: File
+    path: /etc/localtime
+    type: File
   name: host-time
 {{- end }}
 
