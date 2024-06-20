@@ -55,7 +55,6 @@
 {{- define "csi_additional_containers" }}
 {{- $csiControllerImage := index . 0 }}
 - args:
-    - --endpoint=/csi/csi.sock
     - --logging-module=file
     - --log-level=info
     - --log-file-dir=/var/log/huawei
@@ -102,7 +101,6 @@
     - mountPath: /etc/localtime
       name: host-time
 - args:
-    - --endpoint=/csi/csi.sock
     - --logging-module=file
     - --log-level=info
     - --log-file-dir=/var/log/huawei
