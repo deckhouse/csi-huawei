@@ -61,7 +61,10 @@ rules:
     resources:
       - secrets
     verbs:
+      - create
       - get
+      - list
+      - update
   - apiGroups:
       - xuanwu.huawei.io
     resources:
