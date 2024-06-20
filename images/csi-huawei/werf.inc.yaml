@@ -10,10 +10,6 @@ from: {{ $.BASE_GOLANG_22_ALPINE }}
 fromCacheVersion: "2024-06-20.0"
 
 git:
-  - add: /images/csi-huawei/main.go
-    to: /main.go
-  - add: /images/csi-huawei/host_helper.go
-    to: /host_helper.go
   - add: /images/csi-huawei/utils.go
     to: /utils.go
 mount:
@@ -26,8 +22,6 @@ shell:
     - export GO_VERSION={{ env "GOLANG_VERSION" }}
     - export GOPROXY={{ env "GOPROXY" }}
     - git clone --depth 1 --branch {{ env "SOURCE_REPO_TAG" }} {{ env "SOURCE_REPO" }}/Huawei/eSDK_K8S_Plugin.git /esdb_k8s_plugin
-    - mv /main.go /esdb_k8s_plugin/csi
-    - mv /host_helper.go /esdb_k8s_plugin/connector/host
     - mv /utils.go /esdb_k8s_plugin/utils
     - cd /esdb_k8s_plugin
     - GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="-s -w" -o /huaweicsi ./csi
@@ -40,7 +34,7 @@ shell:
     - chmod +x /oceanctl
 
 ---
-{{ $csiBinaries := "/bin/mount /bin/umount /usr/bin/nsenter /bin/xargs /bin/hostname /bin/echo" }}
+{{ $csiBinaries := "/bin/mount /bin/umount /usr/bin/nsenter" }}
 ---
 image: {{ $.ImageName }}-binaries-artifact
 from: {{ $.BASE_ALT_DEV }}
