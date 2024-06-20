@@ -53,6 +53,7 @@
 {{- $csiControllerImage := include "helm_lib_module_image" (list . "csiHuawei") }}
 
 {{- define "csi_additional_containers" }}
+{{- $csiControllerImage := index . 0 }}
 - args:
     - --logging-module=file
     - --log-level=info
@@ -146,6 +147,7 @@
 {{- $_ := set $csiControllerConfig "additionalControllerEnvs" (include "csi_controller_envs" . | fromYamlArray) }}
 {{- $_ := set $csiControllerConfig "additionalControllerVolumes" (include "csi_additional_controller_volume" . | fromYamlArray) }}
 {{- $_ := set $csiControllerConfig "additionalControllerVolumeMounts" (include "csi_additional_controller_volume_mounts" . | fromYamlArray) }}
+{{- $_ := set $csiControllerConfig "additionalContainers" (include "csi_additional_containers" (list $csiControllerImage) | fromYamlArray) }}
 
 {{- include "helm_lib_csi_controller_manifests" (list . $csiControllerConfig) }}
 
