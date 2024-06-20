@@ -7,7 +7,7 @@
 ---
 image: {{ $.ImageName }}-golang-artifact
 from: {{ $.BASE_GOLANG_22_ALPINE }}
-fromCacheVersion: "2024-06-19.2"
+fromCacheVersion: "2024-06-20.0"
 
 git:
   - add: /images/csi-huawei/main.go
@@ -28,7 +28,7 @@ shell:
     - git clone --depth 1 --branch {{ env "SOURCE_REPO_TAG" }} {{ env "SOURCE_REPO" }}/Huawei/eSDK_K8S_Plugin.git /esdb_k8s_plugin
     - mv /main.go /esdb_k8s_plugin/csi
     - mv /host_helper.go /esdb_k8s_plugin/connector/host
-    - mv /utils.go /utils
+    - mv /utils.go /esdb_k8s_plugin/utils
     - cd /esdb_k8s_plugin
     - GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="-s -w" -o /huaweicsi ./csi
     - GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="-s -w" -o /storage-backend-controller ./cmd/storage-backend-controller
@@ -44,7 +44,7 @@ shell:
 ---
 image: {{ $.ImageName }}-binaries-artifact
 from: {{ $.BASE_ALT_DEV }}
-fromCacheVersion: "2024-06-19.3"
+fromCacheVersion: "2024-06-20.0"
 
 shell:
   setup:
