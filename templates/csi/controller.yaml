@@ -52,6 +52,88 @@
 
 {{- $csiControllerImage := include "helm_lib_module_image" (list . "csiHuawei") }}
 
+{{- define "csi_additional_containers" }}
+- args:
+    - --logging-module=file
+    - --log-level=info
+    - --log-file-dir=/var/log/huawei
+    - --log-file-size=20M
+    - --max-backups=9
+    - --web-hook-port=4433
+    - --web-hook-address=$(POD_IP)
+    - --enable-leader-election=false
+    - --leader-lease-duration=8s
+    - --leader-renew-deadline=6s
+    - --leader-retry-period=2s
+  env:
+    - name: CSI_NAMESPACE
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.namespace
+    - name: POD_IP
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: status.podIP
+  image: {{ $csiControllerImage }}
+  imagePullPolicy: IfNotPresent
+  name: storage-backend-controller
+  ports:
+    - containerPort: 4433
+      hostPort: 4433
+      protocol: TCP
+  resources:
+    limits:
+      cpu: 300m
+      memory: 512Mi
+    requests:
+      cpu: 50m
+      memory: 128Mi
+  terminationMessagePath: /dev/termination-log
+  terminationMessagePolicy: File
+  volumeMounts:
+    - mountPath: /var/log
+      name: log
+    - mountPath: /etc/localtime
+      name: host-time
+- args:
+    - --logging-module=file
+    - --log-level=info
+    - --log-file-dir=/var/log/huawei
+    - --log-file-size=20M
+    - --max-backups=9
+    - --backend-update-interval=60
+    - --dr-endpoint=$(DRCSI_ENDPOINT)
+  env:
+    - name: DRCSI_ENDPOINT
+      value: /csi/dr-csi.sock
+    - name: CSI_NAMESPACE
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.namespace
+  image: {{ $csiControllerImage }}
+  imagePullPolicy: IfNotPresent
+  name: storage-backend-sidecar
+  resources:
+    limits:
+      cpu: 300m
+      memory: 512Mi
+    requests:
+      cpu: 50m
+      memory: 128Mi
+  terminationMessagePath: /dev/termination-log
+  terminationMessagePolicy: File
+  volumeMounts:
+    - mountPath: /csi
+      name: socket-dir
+    - mountPath: /var/log
+      name: log
+    - mountPath: /etc/localtime
+      name: host-time
+{{- end }}
+
 {{- $csiControllerConfig := dict }}
 {{- $_ := set $csiControllerConfig "controllerImage" $csiControllerImage }}
 {{- $_ := set $csiControllerConfig "snapshotterEnabled" true }}
