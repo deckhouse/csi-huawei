@@ -110,10 +110,6 @@
     type: DirectoryOrCreate
   name: socket-dir
 - hostPath:
-    path: /var/lib/kubelet/plugins_registry
-    type: Directory
-  name: registration-dir
-- hostPath:
     path: /var/lib/iscsi
     type: ""
   name: iscsi-dir
