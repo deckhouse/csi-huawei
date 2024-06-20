@@ -111,5 +111,5 @@ subjects:
     namespace: d8-{{ .Chart.Name }}
 roleRef:
   kind: ClusterRole
-  name: d8:{{ .Chart.Name }}:csi:controller:sidecar
+  name: d8:{{ .Chart.Name }}:csi:controller:controller-sidecar
   apiGroup: rbac.authorization.k8s.io
