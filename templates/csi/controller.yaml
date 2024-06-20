@@ -34,20 +34,9 @@
 {{- end }}
 
 {{- define "csi_additional_controller_volume" }}
-- name: pods-mount-dir
-  hostPath:
-    path: /var/lib/kubelet/pods
-    type: Directory
-- name: tmp-dir
-  emptyDir: {}
 {{- end }}
 
 {{- define "csi_additional_controller_volume_mounts" }}
-- name: pods-mount-dir
-  mountPath: /var/lib/kubelet/pods
-  mountPropagation: "Bidirectional"
-- mountPath: /tmp
-  name: tmp-dir
 {{- end }}
 
 {{- $csiControllerImage := include "helm_lib_module_image" (list . "csiHuawei") }}
