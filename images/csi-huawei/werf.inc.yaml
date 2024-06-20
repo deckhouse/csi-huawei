@@ -37,7 +37,7 @@ shell:
     - chmod +x /oceanctl
 
 ---
-{{ $csiBinaries := "/bin/mount /bin/umount /usr/bin/nsenter /bin/xargs /usr/bin/hostname /usr/bin/echo" }}
+{{ $csiBinaries := "/bin/mount /bin/umount /usr/bin/nsenter /bin/xargs /bin/hostname /bin/echo" }}
 ---
 image: {{ $.ImageName }}-binaries-artifact
 from: {{ $.BASE_ALT_DEV }}
