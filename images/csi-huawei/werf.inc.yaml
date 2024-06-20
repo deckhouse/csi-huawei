@@ -41,7 +41,7 @@ shell:
 ---
 image: {{ $.ImageName }}-binaries-artifact
 from: {{ $.BASE_ALT_DEV }}
-fromCacheVersion: "2024-06-19.2"
+fromCacheVersion: "2024-06-19.3"
 
 shell:
   setup:
@@ -52,9 +52,6 @@ shell:
     - ./configure LDFLAGS="-static" --enable-static-programs -disable-all-programs --enable-nsenter
     - make install-strip
   install:
-    - whereis hostname
-    - whereis echo
-    - whereis xargs
     - /binary_replace.sh -i "{{ $csiBinaries }}" -o /relocate
 
 ---
