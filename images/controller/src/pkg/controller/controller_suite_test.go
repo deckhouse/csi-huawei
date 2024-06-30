@@ -17,7 +17,7 @@ limitations under the License.
 package controller_test
 
 import (
-	v1alpha1 "d8-controller/api/v1alpha1"
+	v1alpha1 "d8-controller/api/storage.deckhouse.io/v1alpha1"
 	"fmt"
 	"os"
 	"testing"
@@ -59,7 +59,7 @@ func NewFakeClient() client.Client {
 	}
 
 	// See https://github.com/kubernetes-sigs/controller-runtime/issues/2362#issuecomment-1837270195
-	builder := fake.NewClientBuilder().WithScheme(scheme).WithStatusSubresource(&v1alpha1.CephStorageClass{}, &v1alpha1.CephClusterConnection{}, &v1alpha1.CephClusterAuthentication{})
+	builder := fake.NewClientBuilder().WithScheme(scheme).WithStatusSubresource(&v1alpha1.HuaweiStorageConnection{})
 
 	cl := builder.Build()
 	return cl

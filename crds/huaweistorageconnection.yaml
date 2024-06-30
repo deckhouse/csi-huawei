@@ -28,6 +28,7 @@ spec:
             spec:
               type: object
               required:
+                - storageType
                 - pools
                 - urls
                 - login
@@ -35,6 +36,17 @@ spec:
                 - protocol
                 - maxClientThreads
               properties:
+                storageType:
+                  type: string
+                  x-kubernetes-validations:
+                    - rule: self == oldSelf
+                      message: "The storageType field is immutable."
+                  enum:
+                    - OceanStorSAN
+                    - OceanStorNAS
+                    - OceanStorDtree
+                    - FusionStorageSAN
+                    - FusionStorageNAS
                 pools:
                   type: array
                   items:
@@ -57,8 +69,13 @@ spec:
                     - FC
                     - ROCE
                     - FC-NVME
+                    - NFS
                     - DPC
                     - SCSI
+                portals:
+                  type: array
+                  items:
+                    type: string
                 maxClientThreads:
                   type: integer
                   x-kubernetes-validations:

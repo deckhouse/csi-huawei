@@ -23,7 +23,7 @@ import (
 const (
 	LogLevelEnvName                      = "LOG_LEVEL"
 	ControllerNamespaceEnv               = "CONTROLLER_NAMESPACE"
-	HardcodedControllerNS                = "d8-csi-ceph"
+	HardcodedControllerNS                = "d8-csi-huawei"
 	ControllerName                       = "d8-controller"
 	DefaultHealthProbeBindAddressEnvName = "HEALTH_PROBE_BIND_ADDRESS"
 	DefaultHealthProbeBindAddress        = ":8081"

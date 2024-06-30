@@ -23,9 +23,9 @@ import (
 )
 
 const (
-	CephStorageClassKind = "CephStorageClass"
-	APIGroup             = "storage.deckhouse.io"
-	APIVersion           = "v1alpha1"
+	HuaweiStorageConnectionKind = "HuaweiStorageConnection"
+	APIGroup                    = "storage.deckhouse.io"
+	APIVersion                  = "v1alpha1"
 )
 
 // SchemeGroupVersion is group version used to register these objects
@@ -41,12 +41,8 @@ var (
 // Adds the list of known types to Scheme.
 func addKnownTypes(scheme *runtime.Scheme) error {
 	scheme.AddKnownTypes(SchemeGroupVersion,
-		&CephStorageClass{},
-		&CephStorageClassList{},
-		&CephClusterConnection{},
-		&CephClusterConnectionList{},
-		&CephClusterAuthentication{},
-		&CephClusterAuthenticationList{},
+		&HuaweiStorageConnection{},
+		&HuaweiStorageConnectionList{},
 	)
 	metav1.AddToGroupVersion(scheme, SchemeGroupVersion)
 	return nil
