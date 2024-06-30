@@ -19,6 +19,7 @@ package main
 import (
 	"context"
 	"d8-controller/api/storage.deckhouse.io/v1alpha1"
+	v1huawei "d8-controller/api/xuanwu/v1"
 	"d8-controller/pkg/config"
 	"d8-controller/pkg/controller"
 	"d8-controller/pkg/kubutils"
@@ -42,6 +43,7 @@ import (
 var (
 	resourcesSchemeFuncs = []func(*apiruntime.Scheme) error{
 		v1alpha1.AddToScheme,
+		v1huawei.AddToScheme,
 		clientgoscheme.AddToScheme,
 		extv1.AddToScheme,
 		v1.AddToScheme,
