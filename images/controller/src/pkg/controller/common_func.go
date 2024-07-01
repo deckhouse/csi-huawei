@@ -18,9 +18,12 @@ package controller
 
 import (
 	"context"
+	"fmt"
 	"slices"
 
+	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/labels"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
@@ -70,4 +73,46 @@ func addFinalizerIfNotExists(ctx context.Context, cl client.Client, obj metav1.O
 		}
 	}
 	return true, nil
+}
+
+func ensureLabel(resourceLabels map[string]string, selector labels.Set) map[string]string {
+	if !labels.Set(resourceLabels).AsSelector().Matches(selector) {
+		if resourceLabels == nil {
+			resourceLabels = make(map[string]string)
+		}
+		for key, value := range selector {
+			resourceLabels[key] = value
+		}
+	}
+
+	return resourceLabels
+}
+
+func ensureFinalizer(resourceFinalizers []string, finalizerName string) []string {
+	if !slices.Contains(resourceFinalizers, finalizerName) {
+		if resourceFinalizers == nil {
+			resourceFinalizers = []string{}
+		}
+		resourceFinalizers = append(resourceFinalizers, finalizerName)
+	}
+
+	return resourceFinalizers
+}
+
+func deleteResource(ctx context.Context, cl client.Client, obj client.Object, finalizerName string) error {
+	_, err := removeFinalizerIfExists(ctx, cl, obj, finalizerName)
+	if err != nil {
+		return err
+	}
+
+	if len(obj.GetFinalizers()) > 0 {
+		return fmt.Errorf("[deleteResource] resource %s can't be deleted because it still has finalizers: %v", obj.GetName(), obj.GetFinalizers())
+	}
+
+	err = cl.Delete(ctx, obj)
+	if err != nil && !k8serrors.IsNotFound(err) {
+		return err
+	}
+
+	return nil
 }

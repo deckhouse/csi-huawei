@@ -18,7 +18,8 @@ package main
 
 import (
 	"context"
-	"d8-controller/api/v1alpha1"
+	"d8-controller/api/storage.deckhouse.io/v1alpha1"
+	v1huawei "d8-controller/api/xuanwu/v1"
 	"d8-controller/pkg/config"
 	"d8-controller/pkg/controller"
 	"d8-controller/pkg/kubutils"
@@ -42,6 +43,7 @@ import (
 var (
 	resourcesSchemeFuncs = []func(*apiruntime.Scheme) error{
 		v1alpha1.AddToScheme,
+		v1huawei.AddToScheme,
 		clientgoscheme.AddToScheme,
 		extv1.AddToScheme,
 		v1.AddToScheme,
@@ -106,18 +108,8 @@ func main() {
 	}
 	log.Info("[main] successfully created kubernetes manager")
 
-	if _, err = controller.RunCephStorageClassWatcherController(mgr, *cfgParams, *log); err != nil {
-		log.Error(err, fmt.Sprintf("[main] unable to run %s", controller.CephStorageClassCtrlName))
-		os.Exit(1)
-	}
-
-	if _, err = controller.RunCephClusterConnectionWatcherController(mgr, *cfgParams, *log); err != nil {
-		log.Error(err, fmt.Sprintf("[main] unable to run %s", controller.CephClusterConnectionCtrlName))
-		os.Exit(1)
-	}
-
-	if _, err = controller.RunCephClusterAuthenticationWatcherController(mgr, *cfgParams, *log); err != nil {
-		log.Error(err, fmt.Sprintf("[main] unable to run %s", controller.CephClusterAuthenticationCtrlName))
+	if _, err = controller.RunHuaweiStorageConnectionWatcherController(mgr, *cfgParams, *log); err != nil {
+		log.Error(err, fmt.Sprintf("[main] unable to run %s", controller.HuaweiStorageConnectionCtrlName))
 		os.Exit(1)
 	}
 
