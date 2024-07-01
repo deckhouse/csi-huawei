@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: storage-backend-controller
+spec:
+  ports:
+    - name: storage-backend-controller
+      port: 4433
+      protocol: TCP
+      targetPort: 4433
+  selector:
+    app: csi-controller
+  type: ClusterIP

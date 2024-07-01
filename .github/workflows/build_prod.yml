@@ -11,6 +11,7 @@ env:
   GOLANG_VERSION: ${{ vars.GOLANG_VERSION }}
   GOPROXY: ${{ secrets.GOPROXY }}
   SOURCE_REPO: ${{ secrets.SOURCE_REPO }}
+  SOURCE_REPO_TAG: ${{ vars.SOURCE_REPO_TAG }}
 
 on:
   push:

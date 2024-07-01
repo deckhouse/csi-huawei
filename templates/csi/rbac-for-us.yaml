@@ -1,0 +1,115 @@
+{{- include "helm_lib_csi_controller_rbac" . }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: csi-node
+  namespace: d8-{{ .Chart.Name }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: d8:{{ .Chart.Name }}:csi:node
+rules:
+  - apiGroups: [ "" ]
+    resources: [ "secrets","configmaps" ]
+    verbs: [ "get","update","create" ]
+  - apiGroups: [ "xuanwu.huawei.io" ]
+    resources: [ "storagebackendclaims","storagebackendcontents" ]
+    verbs: [ "get" ]
+  - apiGroups: [ "xuanwu.huawei.io" ]
+    resources: [ "resourcetopologies" ]
+    verbs: [ "create", "get", "update", "delete" ]
+  - apiGroups: [ "" ]
+    resources: [ "pods" ]
+    verbs: [ "list","get" ]
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["get","list","watch","create","update","patch"]
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["get"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["list"]
+  - apiGroups: [""]
+    resources: ["persistentvolumes","persistentvolumeclaims"]
+    verbs: ["get"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: d8:{{ .Chart.Name }}:csi:node
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: d8:{{ .Chart.Name }}:csi:node
+subjects:
+  - kind: ServiceAccount
+    name: csi-node
+    namespace: d8-{{ .Chart.Name }}
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: d8:{{ .Chart.Name }}:csi:controller:controller-sidecar
+  {{- include "helm_lib_module_labels" (list . (dict "app" "csi-controller")) | nindent 2 }}
+rules:
+  - apiGroups:
+      - admissionregistration.k8s.io
+    resources:
+      - validatingwebhookconfigurations
+    verbs:
+      - create
+      - get
+      - update
+      - delete
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+      - secrets
+      - events
+    verbs:
+      - create
+      - get
+      - update
+      - delete
+  - apiGroups:
+      - coordination.k8s.io
+    resources:
+      - leases
+    verbs:
+      - create
+      - get
+      - update
+      - delete
+  - apiGroups:
+      - xuanwu.huawei.io
+    resources:
+      - storagebackendclaims
+      - storagebackendclaims/status
+      - storagebackendcontents
+      - storagebackendcontents/status
+    verbs:
+      - create
+      - get
+      - list
+      - watch
+      - update
+      - delete
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: d8:{{ .Chart.Name }}:csi:controller:controller-sidecar
+  {{- include "helm_lib_module_labels" (list . (dict "app" "csi-controller")) | nindent 2 }}
+subjects:
+  - kind: ServiceAccount
+    name: csi
+    namespace: d8-{{ .Chart.Name }}
+roleRef:
+  kind: ClusterRole
+  name: d8:{{ .Chart.Name }}:csi:controller:controller-sidecar
+  apiGroup: rbac.authorization.k8s.io
