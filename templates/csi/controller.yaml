@@ -1,234 +1,234 @@
-###
-### controller
-###
+# ###
+# ### controller
+# ###
 
 
-{{- define "csi_controller_args" }}
-- "--nodename=$(NODE_ID)"
-- "--endpoint=$(CSI_ENDPOINT)"
-- "--dr-endpoint=$(DRCSI_ENDPOINT)"
-- "--driver-name=csi.huawei.com"
-- "--controller"
-- "--backend-update-interval=60"
-- "--logging-module=file"
-- "--log-level=info"
-- "--volume-name-prefix=pvc"
-- "--enable-label=false"
-{{- end }}
+# {{- define "csi_controller_args" }}
+# - "--nodename=$(NODE_ID)"
+# - "--endpoint=$(CSI_ENDPOINT)"
+# - "--dr-endpoint=$(DRCSI_ENDPOINT)"
+# - "--driver-name=csi.huawei.com"
+# - "--controller"
+# - "--backend-update-interval=60"
+# - "--logging-module=file"
+# - "--log-level=info"
+# - "--volume-name-prefix=pvc"
+# - "--enable-label=false"
+# {{- end }}
 
-{{- define "csi_controller_envs" }}
-- name: NODE_ID
-  valueFrom:
-    fieldRef:
-      fieldPath: spec.nodeName
-- name: CSI_ENDPOINT
-  value: /csi/csi.sock
-- name: DRCSI_ENDPOINT
-  value: /csi/dr-csi.sock
-- name: CSI_NAMESPACE
-  valueFrom:
-    fieldRef:
-      apiVersion: v1
-      fieldPath: metadata.namespace
-{{- include "helm_lib_envs_for_proxy" . }}
-{{- end }}
+# {{- define "csi_controller_envs" }}
+# - name: NODE_ID
+#   valueFrom:
+#     fieldRef:
+#       fieldPath: spec.nodeName
+# - name: CSI_ENDPOINT
+#   value: /csi/csi.sock
+# - name: DRCSI_ENDPOINT
+#   value: /csi/dr-csi.sock
+# - name: CSI_NAMESPACE
+#   valueFrom:
+#     fieldRef:
+#       apiVersion: v1
+#       fieldPath: metadata.namespace
+# {{- include "helm_lib_envs_for_proxy" . }}
+# {{- end }}
 
-{{- define "csi_additional_controller_volume" }}
-{{- end }}
+# {{- define "csi_additional_controller_volume" }}
+# {{- end }}
 
-{{- define "csi_additional_controller_volume_mounts" }}
-{{- end }}
+# {{- define "csi_additional_controller_volume_mounts" }}
+# {{- end }}
 
-{{- $csiControllerImage := include "helm_lib_module_image" (list . "csiHuawei") }}
+# {{- $csiControllerImage := include "helm_lib_module_image" (list . "csiHuawei") }}
 
-{{- define "csi_additional_containers" }}
-{{- $csiControllerImage := index . 0 }}
-- args:
-    - --logging-module=file
-    - --log-level=info
-    - --log-file-dir=/var/log/huawei
-    - --log-file-size=20M
-    - --max-backups=9
-    - --web-hook-port=4433
-    - --web-hook-address=$(POD_IP)
-    - --enable-leader-election=false
-    - --leader-lease-duration=8s
-    - --leader-renew-deadline=6s
-    - --leader-retry-period=2s
-  command:
-    - /storage-backend-controller
-  env:
-    - name: CSI_NAMESPACE
-      valueFrom:
-        fieldRef:
-          apiVersion: v1
-          fieldPath: metadata.namespace
-    - name: POD_IP
-      valueFrom:
-        fieldRef:
-          apiVersion: v1
-          fieldPath: status.podIP
-  image: {{ $csiControllerImage }}
-  imagePullPolicy: IfNotPresent
-  name: storage-backend-controller
-  ports:
-    - containerPort: 4433
-      hostPort: 4433
-      protocol: TCP
-  resources:
-    limits:
-      cpu: 300m
-      memory: 512Mi
-    requests:
-      cpu: 50m
-      memory: 128Mi
-  terminationMessagePath: /dev/termination-log
-  terminationMessagePolicy: File
-  volumeMounts:
-    - mountPath: /var/log
-      name: log
-    - mountPath: /etc/localtime
-      name: host-time
-- args:
-    - --logging-module=file
-    - --log-level=info
-    - --log-file-dir=/var/log/huawei
-    - --log-file-size=20M
-    - --max-backups=9
-    - --backend-update-interval=60
-    - --dr-endpoint=$(DRCSI_ENDPOINT)
-  command:
-    - /storage-backend-sidecar
-  env:
-    - name: DRCSI_ENDPOINT
-      value: /csi/dr-csi.sock
-    - name: CSI_NAMESPACE
-      valueFrom:
-        fieldRef:
-          apiVersion: v1
-          fieldPath: metadata.namespace
-  image: {{ $csiControllerImage }}
-  imagePullPolicy: IfNotPresent
-  name: storage-backend-sidecar
-  resources:
-    limits:
-      cpu: 300m
-      memory: 512Mi
-    requests:
-      cpu: 50m
-      memory: 128Mi
-  terminationMessagePath: /dev/termination-log
-  terminationMessagePolicy: File
-  volumeMounts:
-    - mountPath: /csi
-      name: socket-dir
-    - mountPath: /var/log
-      name: log
-    - mountPath: /etc/localtime
-      name: host-time
-{{- end }}
+# {{- define "csi_additional_containers" }}
+# {{- $csiControllerImage := index . 0 }}
+# - args:
+#     - --logging-module=file
+#     - --log-level=info
+#     - --log-file-dir=/var/log/huawei
+#     - --log-file-size=20M
+#     - --max-backups=9
+#     - --web-hook-port=4433
+#     - --web-hook-address=$(POD_IP)
+#     - --enable-leader-election=false
+#     - --leader-lease-duration=8s
+#     - --leader-renew-deadline=6s
+#     - --leader-retry-period=2s
+#   command:
+#     - /storage-backend-controller
+#   env:
+#     - name: CSI_NAMESPACE
+#       valueFrom:
+#         fieldRef:
+#           apiVersion: v1
+#           fieldPath: metadata.namespace
+#     - name: POD_IP
+#       valueFrom:
+#         fieldRef:
+#           apiVersion: v1
+#           fieldPath: status.podIP
+#   image: {{ $csiControllerImage }}
+#   imagePullPolicy: IfNotPresent
+#   name: storage-backend-controller
+#   ports:
+#     - containerPort: 4433
+#       hostPort: 4433
+#       protocol: TCP
+#   resources:
+#     limits:
+#       cpu: 300m
+#       memory: 512Mi
+#     requests:
+#       cpu: 50m
+#       memory: 128Mi
+#   terminationMessagePath: /dev/termination-log
+#   terminationMessagePolicy: File
+#   volumeMounts:
+#     - mountPath: /var/log
+#       name: log
+#     - mountPath: /etc/localtime
+#       name: host-time
+# - args:
+#     - --logging-module=file
+#     - --log-level=info
+#     - --log-file-dir=/var/log/huawei
+#     - --log-file-size=20M
+#     - --max-backups=9
+#     - --backend-update-interval=60
+#     - --dr-endpoint=$(DRCSI_ENDPOINT)
+#   command:
+#     - /storage-backend-sidecar
+#   env:
+#     - name: DRCSI_ENDPOINT
+#       value: /csi/dr-csi.sock
+#     - name: CSI_NAMESPACE
+#       valueFrom:
+#         fieldRef:
+#           apiVersion: v1
+#           fieldPath: metadata.namespace
+#   image: {{ $csiControllerImage }}
+#   imagePullPolicy: IfNotPresent
+#   name: storage-backend-sidecar
+#   resources:
+#     limits:
+#       cpu: 300m
+#       memory: 512Mi
+#     requests:
+#       cpu: 50m
+#       memory: 128Mi
+#   terminationMessagePath: /dev/termination-log
+#   terminationMessagePolicy: File
+#   volumeMounts:
+#     - mountPath: /csi
+#       name: socket-dir
+#     - mountPath: /var/log
+#       name: log
+#     - mountPath: /etc/localtime
+#       name: host-time
+# {{- end }}
 
-{{- $csiControllerConfig := dict }}
-{{- $_ := set $csiControllerConfig "controllerImage" $csiControllerImage }}
-{{- $_ := set $csiControllerConfig "snapshotterEnabled" true }}
-{{- $_ := set $csiControllerConfig "resizerEnabled" true }}
-{{- $_ := set $csiControllerConfig "provisionerTimeout" "1200s" }}
-{{- $_ := set $csiControllerConfig "snapshotterTimeout" "1200s" }}
-{{- $_ := set $csiControllerConfig "extraCreateMetadataEnabled" true }}
-{{- $_ := set $csiControllerConfig "livenessProbePort" 9696 }}
-{{- $_ := set $csiControllerConfig "additionalControllerArgs" (include "csi_controller_args" . | fromYamlArray) }}
-{{- $_ := set $csiControllerConfig "additionalControllerEnvs" (include "csi_controller_envs" . | fromYamlArray) }}
-{{- $_ := set $csiControllerConfig "additionalControllerVolumes" (include "csi_additional_controller_volume" . | fromYamlArray) }}
-{{- $_ := set $csiControllerConfig "additionalControllerVolumeMounts" (include "csi_additional_controller_volume_mounts" . | fromYamlArray) }}
-{{- $_ := set $csiControllerConfig "additionalContainers" (include "csi_additional_containers" (list $csiControllerImage) | fromYamlArray) }}
+# {{- $csiControllerConfig := dict }}
+# {{- $_ := set $csiControllerConfig "controllerImage" $csiControllerImage }}
+# {{- $_ := set $csiControllerConfig "snapshotterEnabled" true }}
+# {{- $_ := set $csiControllerConfig "resizerEnabled" true }}
+# {{- $_ := set $csiControllerConfig "provisionerTimeout" "1200s" }}
+# {{- $_ := set $csiControllerConfig "snapshotterTimeout" "1200s" }}
+# {{- $_ := set $csiControllerConfig "extraCreateMetadataEnabled" true }}
+# {{- $_ := set $csiControllerConfig "livenessProbePort" 9696 }}
+# {{- $_ := set $csiControllerConfig "additionalControllerArgs" (include "csi_controller_args" . | fromYamlArray) }}
+# {{- $_ := set $csiControllerConfig "additionalControllerEnvs" (include "csi_controller_envs" . | fromYamlArray) }}
+# {{- $_ := set $csiControllerConfig "additionalControllerVolumes" (include "csi_additional_controller_volume" . | fromYamlArray) }}
+# {{- $_ := set $csiControllerConfig "additionalControllerVolumeMounts" (include "csi_additional_controller_volume_mounts" . | fromYamlArray) }}
+# {{- $_ := set $csiControllerConfig "additionalContainers" (include "csi_additional_containers" (list $csiControllerImage) | fromYamlArray) }}
 
-{{- include "helm_lib_csi_controller_manifests" (list . $csiControllerConfig) }}
+# {{- include "helm_lib_csi_controller_manifests" (list . $csiControllerConfig) }}
 
-###
-### node
-###
+# ###
+# ### node
+# ###
 
-{{- define "csi_node_args" }}
-- "--endpoint=/csi/csi.sock"
-- "--dr-endpoint=$(DRCSI_ENDPOINT)"
-- "--driver-name=csi.huawei.com"
-- "--connector-threads=4"
-- "--volume-use-multipath=true"
-- "--all-path-online=false"
-- "--kubelet-volume-devices-dir-name=/volumeDevices/"
-- "--scsi-multipath-type=DM-multipath"
-- "--nvme-multipath-type=HW-UltraPath-NVMe"
-- "--scan-volume-timeout=3"
-- "--exec-command-timeout=30"
-- "--logging-module=file"
-- "--log-level=info"
-- "--log-file-dir=/var/log/huawei"
-- "--log-file-size=20M"
-- "--max-backups=9"
-{{- end }}
+# {{- define "csi_node_args" }}
+# - "--endpoint=/csi/csi.sock"
+# - "--dr-endpoint=$(DRCSI_ENDPOINT)"
+# - "--driver-name=csi.huawei.com"
+# - "--connector-threads=4"
+# - "--volume-use-multipath=true"
+# - "--all-path-online=false"
+# - "--kubelet-volume-devices-dir-name=/volumeDevices/"
+# - "--scsi-multipath-type=DM-multipath"
+# - "--nvme-multipath-type=HW-UltraPath-NVMe"
+# - "--scan-volume-timeout=3"
+# - "--exec-command-timeout=30"
+# - "--logging-module=file"
+# - "--log-level=info"
+# - "--log-file-dir=/var/log/huawei"
+# - "--log-file-size=20M"
+# - "--max-backups=9"
+# {{- end }}
 
-{{- define "csi_node_envs" }}
-- name: CSI_NAMESPACE
-  valueFrom:
-    fieldRef:
-      apiVersion: v1
-      fieldPath: metadata.namespace
-- name: CSI_NODENAME
-  valueFrom:
-    fieldRef:
-      apiVersion: v1
-      fieldPath: spec.nodeName
-{{- end }}
+# {{- define "csi_node_envs" }}
+# - name: CSI_NAMESPACE
+#   valueFrom:
+#     fieldRef:
+#       apiVersion: v1
+#       fieldPath: metadata.namespace
+# - name: CSI_NODENAME
+#   valueFrom:
+#     fieldRef:
+#       apiVersion: v1
+#       fieldPath: spec.nodeName
+# {{- end }}
 
 
-{{- define "csi_additional_node_volume" }}
-- hostPath:
-    path: /var/lib/kubelet/csi-plugins/csi.huawei.com
-    type: DirectoryOrCreate
-  name: socket-dir
-- hostPath:
-    path: /var/lib/iscsi
-    type: ""
-  name: iscsi-dir
-- hostPath:
-    path: /var/log/
-    type: Directory
-  name: log-dir
-- hostPath:
-    path: /etc/iscsi
-    type: DirectoryOrCreate
-  name: iscsi-config-dir
-- hostPath:
-    path: /etc/nvme
-    type: DirectoryOrCreate
-  name: nvme-config-dir
-- hostPath:
-    path: /etc/localtime
-    type: File
-  name: host-time
-{{- end }}
+# {{- define "csi_additional_node_volume" }}
+# - hostPath:
+#     path: /var/lib/kubelet/csi-plugins/csi.huawei.com
+#     type: DirectoryOrCreate
+#   name: socket-dir
+# - hostPath:
+#     path: /var/lib/iscsi
+#     type: ""
+#   name: iscsi-dir
+# - hostPath:
+#     path: /var/log/
+#     type: Directory
+#   name: log-dir
+# - hostPath:
+#     path: /etc/iscsi
+#     type: DirectoryOrCreate
+#   name: iscsi-config-dir
+# - hostPath:
+#     path: /etc/nvme
+#     type: DirectoryOrCreate
+#   name: nvme-config-dir
+# - hostPath:
+#     path: /etc/localtime
+#     type: File
+#   name: host-time
+# {{- end }}
 
-{{- define "csi_additional_node_volume_mounts" }}
-- mountPath: /var/log
-  name: log-dir
-- mountPath: /var/lib/iscsi
-  name: iscsi-dir
-- mountPath: /etc/iscsi
-  name: iscsi-config-dir
-- mountPath: /etc/nvme
-  name: nvme-config-dir
-- mountPath: /etc/localtime
-  name: host-time
-{{- end }}
+# {{- define "csi_additional_node_volume_mounts" }}
+# - mountPath: /var/log
+#   name: log-dir
+# - mountPath: /var/lib/iscsi
+#   name: iscsi-dir
+# - mountPath: /etc/iscsi
+#   name: iscsi-config-dir
+# - mountPath: /etc/nvme
+#   name: nvme-config-dir
+# - mountPath: /etc/localtime
+#   name: host-time
+# {{- end }}
 
-{{- $csiNodeConfig := dict }}
-{{- $_ := set $csiNodeConfig "fullname" "csi-huawei" }}
-{{- $_ := set $csiNodeConfig "nodeImage" $csiControllerImage }}
-{{- $_ := set $csiNodeConfig "driverFQDN" "csi.huawei.com" }}
-{{- $_ := set $csiNodeConfig "serviceAccount" "csi-node" }}
-{{- $_ := set $csiNodeConfig "additionalNodeArgs" (include "csi_node_args" . | fromYamlArray) }}
-{{- $_ := set $csiNodeConfig "additionalNodeEnvs" (include "csi_node_envs" . | fromYamlArray) }}
-{{- $_ := set $csiNodeConfig "additionalNodeVolumes" (include "csi_additional_node_volume" . | fromYamlArray) }}
-{{- $_ := set $csiNodeConfig "additionalNodeVolumeMounts" (include "csi_additional_node_volume_mounts" . | fromYamlArray) }}
+# {{- $csiNodeConfig := dict }}
+# {{- $_ := set $csiNodeConfig "fullname" "csi-huawei" }}
+# {{- $_ := set $csiNodeConfig "nodeImage" $csiControllerImage }}
+# {{- $_ := set $csiNodeConfig "driverFQDN" "csi.huawei.com" }}
+# {{- $_ := set $csiNodeConfig "serviceAccount" "csi-node" }}
+# {{- $_ := set $csiNodeConfig "additionalNodeArgs" (include "csi_node_args" . | fromYamlArray) }}
+# {{- $_ := set $csiNodeConfig "additionalNodeEnvs" (include "csi_node_envs" . | fromYamlArray) }}
+# {{- $_ := set $csiNodeConfig "additionalNodeVolumes" (include "csi_additional_node_volume" . | fromYamlArray) }}
+# {{- $_ := set $csiNodeConfig "additionalNodeVolumeMounts" (include "csi_additional_node_volume_mounts" . | fromYamlArray) }}
 
-{{- include "helm_lib_csi_node_manifests" (list . $csiNodeConfig) }}
+# {{- include "helm_lib_csi_node_manifests" (list . $csiNodeConfig) }}
