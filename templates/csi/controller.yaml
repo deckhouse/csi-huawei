@@ -10,7 +10,7 @@
 - "--driver-name=csi.huawei.com"
 - "--controller"
 - "--backend-update-interval=60"
-- "--logging-module=file"
+- "--logging-module=console"
 - "--log-level=info"
 - "--volume-name-prefix=pvc"
 - "--enable-label=false"
@@ -35,18 +35,12 @@
 
 {{- define "csi_additional_controller_volume" }}
 - hostPath:
-    path: /var/log/
-    type: Directory
-  name: log
-- hostPath:
     path: /etc/localtime
     type: File
   name: host-time
 {{- end }}
 
 {{- define "csi_additional_controller_volume_mounts" }}
-- mountPath: /var/log
-  name: log
 {{- end }}
 
 {{- $csiControllerImage := include "helm_lib_module_image" (list . "csiHuawei") }}
@@ -54,10 +48,8 @@
 {{- define "csi_additional_containers" }}
 {{- $csiControllerImage := index . 0 }}
 - args:
-    - --logging-module=file
+    - --logging-module=console
     - --log-level=info
-    - --log-file-dir=/var/log/huawei
-    - --log-file-size=20M
     - --max-backups=9
     - --web-hook-port=4433
     - --web-hook-address=$(POD_IP)
@@ -95,15 +87,11 @@
   terminationMessagePath: /dev/termination-log
   terminationMessagePolicy: File
   volumeMounts:
-    - mountPath: /var/log
-      name: log
     - mountPath: /etc/localtime
       name: host-time
 - args:
-    - --logging-module=file
+    - --logging-module=console
     - --log-level=info
-    - --log-file-dir=/var/log/huawei
-    - --log-file-size=20M
     - --max-backups=9
     - --backend-update-interval=60
     - --dr-endpoint=$(DRCSI_ENDPOINT)
@@ -132,8 +120,6 @@
   volumeMounts:
     - mountPath: /csi
       name: socket-dir
-    - mountPath: /var/log
-      name: log
     - mountPath: /etc/localtime
       name: host-time
 {{- end }}
@@ -170,10 +156,8 @@
 - "--nvme-multipath-type=HW-UltraPath-NVMe"
 - "--scan-volume-timeout=3"
 - "--exec-command-timeout=30"
-- "--logging-module=file"
+- "--logging-module=console"
 - "--log-level=info"
-- "--log-file-dir=/var/log/huawei"
-- "--log-file-size=20M"
 - "--max-backups=9"
 {{- end }}
 
@@ -201,10 +185,6 @@
     type: ""
   name: iscsi-dir
 - hostPath:
-    path: /var/log/
-    type: Directory
-  name: log-dir
-- hostPath:
     path: /etc/iscsi
     type: DirectoryOrCreate
   name: iscsi-config-dir
@@ -219,8 +199,6 @@
 {{- end }}
 
 {{- define "csi_additional_node_volume_mounts" }}
-- mountPath: /var/log
-  name: log-dir
 - mountPath: /var/lib/iscsi
   name: iscsi-dir
 - mountPath: /etc/iscsi
