@@ -46,7 +46,7 @@
 
 {{- define "csi_additional_controller_volume_mounts" }}
 - mountPath: /var/log
-  name: log-dir
+  name: log
 {{- end }}
 
 {{- $csiControllerImage := include "helm_lib_module_image" (list . "csiHuawei") }}
