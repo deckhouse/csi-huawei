@@ -34,19 +34,11 @@
 {{- end }}
 
 {{- define "csi_additional_controller_volume" }}
-- hostPath:
-    path: /var/log/
-    type: Directory
-  name: log-dir
-- hostPath:
-    path: /etc/localtime
-    type: File
-  name: host-time
 {{- end }}
 
 {{- define "csi_additional_controller_volume_mounts" }}
 - mountPath: /var/log
-  name: log-dir
+  name: log
 - mountPath: /etc/localtime
   name: host-time
 {{- end }}
